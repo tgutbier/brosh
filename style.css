@@ -1,0 +1,134 @@
+body#brosh.errback {
+    background-color: #777;
+}
+body#brosh {
+    background-color: #222;
+    color: #eee;
+    font-family: courier;
+    font-weight: bold;
+    padding: 15px;
+    margin: 0;
+    transition: background-color 10ms;
+}
+body#brosh p {
+    margin: 0;
+    padding: 2px 0 0 0;
+    line-height: 18px;
+}
+body#brosh span.small {
+    font-size: 9px;
+    color: #666;
+}
+body#brosh span.location {
+    display: inline-block;
+    margin: 1px 0;
+}
+body#brosh span.cursor {
+    display: inline-block;
+    border: solid 1px #eee;
+    white-space: pre;
+}
+body#brosh span.text {
+    display: inline-block;
+    margin: 1px 0;
+    white-space: pre;
+    padding-right: 0px; 
+}
+body#brosh span.text {
+    display: inline-block;
+    padding-left: 5px;
+    letter-spacing: 1px;
+    transition: letter-spacing 1s, opacity 4s;
+}
+body#brosh span.text.smog {
+    opacity: 0.5;
+    letter-spacing: -2px;
+}
+body#brosh span.text.smog2 {
+    letter-spacing: 0.3px;
+    opacity: 0.05;
+}
+body#brosh span.cursor.active {
+    background-color: #eee;
+}
+span.cursor.active-error {
+    display: inline-block;
+    background-color: #c00;
+    margin: 1px 0;
+}
+body#brosh div#image {
+    background-image: url('less.jpg');
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    opacity: 0.1;
+    transition: opacity 1.5s;
+}
+body#brosh div#image.blank {
+    opacity: 0.02;
+}
+body#brosh div#video {
+    position: fixed;
+    height: 390px;
+    width: 640px;
+    display: none;
+    bottom: 150px;
+    left: 350px;
+    opacity: 0.3;
+    transition: transform 2s, box-shadow 2s;
+    overflow: hidden;
+}
+body#brosh div#video.trans {
+    transform: rotate(30deg);
+    box-shadow: 0 0 20px 20px #eee;
+    border-radius: 200px;
+}
+body#brosh div#svg {
+    display: none;
+    opacity: 0.95;
+    position: fixed;
+    top: 100px;
+    top: 50px;
+    z-index: 10;
+}
+span.error {
+    color: #c00;
+}
+div#char {
+    /*display: none;*/
+    opacity: 0.5;
+    position: fixed;
+    left: 50%;
+    bottom: 50%;
+    margin: 0 0 -40px -40px;
+    width: 80px;
+    height: 80px;
+    z-index: 10;
+    font-size: 30px;
+}
+div#char span.small {
+    font-size: 12px;
+}
+div#input {
+    display: none;
+    opacity: 0.5;
+    position: fixed;
+    font-size: 12px;
+    opacity: 0.5;
+    position: fixed;
+    left: 50%;
+    bottom: 80%;
+    margin: 0 0 -100px -15px;
+    width: 200px;
+    height: 30px;
+    z-index: 10;
+    font-size: 30px;
+}
+div#input input {
+    width: 200px;
+    height: 15px;
+}

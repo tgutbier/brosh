@@ -105,11 +105,27 @@ var commands = {
     unless: function(args) {
         $('#image').css('display', 'none');
     },
-    times: function(args) {
-        var i;
-        for(i = 1; i <= args[1]; i++) {
-            brosh.outputLine(args[2]);
+    repeat: function(args) {
+        if (isUndefined(args, [1, 2])) {
+            brosh.outputLine('usage: repeat number cmd arguments');
+            return;
         }
+        var n = args[1];
+        var cmd = args[2];
+        var newArgs = [];
+        var i;
+        for (i = 2; i < args.length; i++) {
+            newArgs.push(args[i]);
+        }
+        for (i = 1; i <= n; i++) {
+            window.commands[cmd](newArgs);
+        }
+    },
+    times: function(args) {
+        var text = args[2];
+        args[2] = 'echo';
+        args[3] = text;
+        this.repeat(args);
     },
     rev: function(args) {
         if (typeof args[1] === 'undefined') {

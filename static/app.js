@@ -96,7 +96,6 @@ var Shell = function (selector) {
     };
     this.outputLine = function(str) {
         this.output(str + '<br />');
-        this.scroll();
     };
     this.clear = function() {
         this.domNode.html('');

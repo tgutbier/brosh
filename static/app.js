@@ -1,53 +1,48 @@
-var Command = function(rawCommand) {
+var InputLine = function(rawCommand) {
     this.raw = rawCommand;
-    this.name = null;
-    this.args = [];
-    this.init();
 };
-Command.prototype.init = function() {
-    this.raw = this.raw.trim();
-    var arglist = this.raw.split(" ");
-    this.name = arglist[0];
-    this.args = arglist;
-};
-Command.prototype.update = function(rawCommand) {
-    this.raw = rawCommand.trim();
-    this.init();
-};
-Command.prototype.getRaw = function() {
+InputLine.prototype.getRaw = function() {
     return this.raw;
 };
-Command.prototype.delChar = function() {
-    this.raw = this.raw.slice(0, - 1);
-    this.init();
+InputLine.prototype.getName = function() {
+    return this.getArgs()[0];
+};
+InputLine.prototype.getArgs = function() {
+    return this.getRaw().trim().split(" ");
+};
+InputLine.prototype.update = function(rawCommand) {
+    this.raw = rawCommand;
+};
+InputLine.prototype.delChar = function() {
+    this.raw = this.getRaw().slice(0, -1);
     return this.raw;
 };
 var History = {
-    current: null,
-    commands: [],
+    currentIndex: null,
+    inputLines: [],
     add: function(command) {
-        this.commands.push(command);
-        this.current = this.commands.length - 1;
+        this.inputLines.push(command);
+        this.currentIndex = this.inputLines.length - 1;
     },
     getCurrent: function() {
-        return this.commands[this.current];
+        return this.inputLines[this.currentIndex];
     },
     last: function() {
-        if (this.commands.length) {
-            return this.commands[this.commands.length - 1];
+        if (this.inputLines.length) {
+            return this.inputLines[this.inputLines.length - 1];
         }
         return false;
     },
     next: function() {
-        if (this.current < this.commands.length - 1) {
-            this.current++;
+        if (this.currentIndex < this.inputLines.length - 1) {
+            this.currentIndex++;
             return this.getCurrent();
         }
         return false;
     },
     prev: function() {
-        if (this.current > 0) {
-            this.current--;
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
             return this.getCurrent();
         }
         return false;
@@ -55,26 +50,26 @@ var History = {
 };
 var Shell = function (selector) {
     this.domNode = $(selector);
-    this.command = null;
+    this.inputLine = null;
     this.promptDomNode = null;
     this.outputDomNode = null;
     this.suspendState = false;
     this.showInputActive = broshSettings.showInput;
     this.addChar = function(keyValue) {
         this.promptDomNode.find('span.text').append(keyValue);
-        var rawCommand = this.promptDomNode.find('span.text').html();
-        this.command.update(rawCommand);
+        var rawInputLine = this.promptDomNode.find('span.text').html();
+        this.inputLine.update(rawInputLine);
     };
     this.delChar = function() {
-        this.command.delChar();
-        this.promptDomNode.find('span.text').html(this.command.getRaw());
+        this.inputLine.delChar();
+        this.promptDomNode.find('span.text').html(this.inputLine.getRaw());
     };
-    this.setPrompt = function(command) {
-        this.promptDomNode.find('span.text').html(command.raw);
-        this.command = command;
+    this.setPrompt = function(inputLine) {
+        this.promptDomNode.find('span.text').html(inputLine.getRaw());
+        this.inputLine = inputLine;
     };
-    this.getCommand = function() {
-        return this.command;
+    this.getInputLine = function() {
+        return this.inputLine;
     };
     this.nextPrompt = function(str) {
         this.createPrompt(str);
@@ -83,9 +78,9 @@ var Shell = function (selector) {
         $('.cursor').removeClass('cursor');
         $('.text').removeClass('smog');
         this.promptDomNode = $('<p><span class="location">brosh:></span><span><span class="text smog">' + str + '</span></span><span class="cursor"> </span></p>');
-        if (this.command === null || this.command.name.length > 0) {
-            this.command = new Command('');
-            History.add(this.command);
+        if (this.inputLine === null || this.inputLine.getName().length > 0) {
+            this.inputLine = new InputLine('');
+            History.add(this.inputLine);
         }
         this.domNode.append(this.promptDomNode);
         this.scroll();
@@ -96,7 +91,7 @@ var Shell = function (selector) {
         this.scroll();
     };
     this.outputLine = function(str) {
-        this.output(str + '<br />');
+        this.output(str);
     };
     this.clear = function() {
         this.domNode.html('');
@@ -157,19 +152,19 @@ var ShellHandler = function(event) {
     event.preventDefault();
     brosh.showInput(event);
     if (event.keyCode === 13) {
-        var command = brosh.getCommand();
-        var name = command.name;
-        var args = command.args;
+        var inputLine = brosh.getInputLine();
+        var name = inputLine.getName();
+        var args = inputLine.getArgs();
         if (name !== '') {
             try {
-                if (typeof window.aliases[name] === 'function') {
-                    window.aliases[name](args);
+                if (typeof aliases[name] === 'function') {
+                    aliases[name](args);
                 } else {
-                    window.commands[name](args);
+                    commands[name](args);
                 }
             }
             catch (error) {
-                if (typeof window.commands[name] === 'undefined') {
+                if (typeof commands[name] === 'undefined') {
                     commands.commandNotFound(args);
                 } else {
                     commands.commandError(args);
@@ -190,9 +185,9 @@ var ShellHandler = function(event) {
         }
         // UP
         if (event.keyCode === 38) {
-            command = History.prev();
-            if (command !== false) {
-                brosh.setPrompt(command);
+            inputLine = History.prev();
+            if (inputLine !== false) {
+                brosh.setPrompt(inputLine);
             }
         }
         // RIGHT
@@ -200,9 +195,9 @@ var ShellHandler = function(event) {
         }
         // DOWN
         if (event.keyCode === 40) {
-            command = History.next();
-            if (command !== false) {
-                brosh.setPrompt(command);
+            inputLine = History.next();
+            if (inputLine !== false) {
+                brosh.setPrompt(inputLine);
             }
         }
     } else if (event.keyCode > 30) {

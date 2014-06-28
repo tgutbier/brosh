@@ -87,13 +87,16 @@ var Shell = function (selector) {
             History.add(this.command);
         }
         this.domNode.append(this.promptDomNode);
+        this.scroll();
     };
     this.output = function(str) {
         this.outputDomNode = $('<p><span class="text">' + str + '</span></p>');
         this.domNode.append(this.outputDomNode);
+        this.scroll();
     };
     this.outputLine = function(str) {
         this.output(str + '<br />');
+        this.scroll();
     };
     this.clear = function() {
         this.domNode.html('');
@@ -114,7 +117,9 @@ var Shell = function (selector) {
         }, 100);
     };
     this.scroll = function() {
-        $(document).scrollTop($(document).height());
+        setTimeout(function(){
+            $(document).scrollTop($(document).height());
+        }, 20);
         return false;
     };
     this.suspend = function() {
@@ -144,7 +149,6 @@ var ShellHandler = function(event) {
     $('div#char').html(event.key + '<span class="small">' + event.keyCode + ' </span> ');
     if (event.keyCode === 13) {
         var command = brosh.getCommand();
-        brosh.scroll();
         var name = command.name;
         var args = command.args;
         if (name !== '') {

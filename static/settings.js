@@ -1,5 +1,6 @@
 var broshSettings = {
     version: '0.3.0',
-    showInput: false
+    showInput: false,
+    backgroundImage: 'less.jpg'
 };
         

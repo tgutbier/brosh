@@ -36,13 +36,6 @@ var commands = {
     goto: function(args) {
         window.open('http://' + args[1]);
     },
-    blink: function(args) {
-        $('#image').css('display', 'block');
-        setInterval(function() {
-            $('#image').toggleClass('blank');
-            console.info('blank');
-        }, 2000);
-    },
     play: function(args) {
         args.push('play');
         this.vid(args);
@@ -115,12 +108,26 @@ var commands = {
         $('#svg').css('display', 'block');
     },
     less: function(args) {
+        var image = $('#image');
         if (args[1] === 'on') {
-            $('#image').css('display', 'block');
+            if (typeof broshSettings.backgroundImage !== 'undefined') {
+                image.css('background-image', 'url(' + broshSettings.backgroundImage + ')');
+            } else {
+                brosh.outputLine('warning: backgroundImage is undefined in settings');
+            }
+            image.css('display', 'block');
         } else if (args[1] === 'off') {
-            $('#image').css('display', 'none');
+            image.css('display', 'none');
+        } else if (args[1] === 'blink') {
+            if (image.css('display') === 'block') {
+                setInterval(function() {
+                    image.toggleClass('blank');
+                }, 2000);
+            } else {
+                brosh.outputLine('warning: Image is not visible. Use less on to show it.');
+            }
         } else {
-            brosh.outputLine('usage: less on|off');
+            brosh.outputLine('usage: less on|off|blink');
         }
     },
     unless: function(args) {

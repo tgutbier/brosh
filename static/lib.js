@@ -11,3 +11,12 @@ function delchar(str, pos)
     console.info('delpos: ' + str);
     return str.slice(0, pos-1) + str.slice(pos);
 }
+function isUndefined(args, indexes) {
+    var i;
+    for (i = 0; i < indexes.length; i++) {
+        if (typeof args[indexes[i]] === 'undefined') {
+            return true;
+        }
+    }
+    return false;
+}

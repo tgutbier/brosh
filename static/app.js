@@ -59,7 +59,7 @@ var Shell = function (selector) {
     this.promptDomNode = null;
     this.outputDomNode = null;
     this.suspendState = false;
-    this.showInputActive = true;
+    this.showInputActive = broshSettings.showInput;
     this.addChar = function(keyValue) {
         this.promptDomNode.find('span.text').append(keyValue);
         var rawCommand = this.promptDomNode.find('span.text').html();

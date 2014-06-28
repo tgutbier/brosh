@@ -156,7 +156,7 @@ var commands = {
         brosh.output(reverse(args[1]) + '<br />');
     },
     ver: function(args) {
-        brosh.outputLine('BroSh - Version 0.02.0785');
+        brosh.outputLine('BroSh - Version ' + broshSettings.version);
     },
     errtest: function(args) {
         brosh.outputLine(undefinedVariable);

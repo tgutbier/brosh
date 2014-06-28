@@ -58,6 +58,7 @@ var Shell = function (selector) {
     this.command = null;
     this.promptDomNode = null;
     this.outputDomNode = null;
+    this.suspendState = false;
     this.addChar = function(keyValue) {
         this.promptDomNode.find('span.text').append(keyValue);
         var rawCommand = this.promptDomNode.find('span.text').html();
@@ -82,7 +83,6 @@ var Shell = function (selector) {
         $('.text').removeClass('smog');
         this.promptDomNode = $('<p><span class="location">brosh:></span><span><span class="text smog">' + str + '</span></span><span class="cursor"> </span></p>');
         if (this.command === null || this.command.name.length > 0) {
-            console.info('new command');
             this.command = new Command('');
             History.add(this.command);
         }
@@ -117,25 +117,29 @@ var Shell = function (selector) {
         $(document).scrollTop($(document).height());
         return false;
     };
+    this.suspend = function() {
+        this.suspendState = true;
+        $('body').unbind('keydown');
+        brosh.domNode.find('span.cursor').removeClass('active');
+    };
+    this.resume = function() {
+        this.suspendState = false;
+        $('body').bind('keydown', ShellHandler);
+    };
+    this.cursorBlink = function() {
+        if (!brosh.suspendState) {
+            brosh.domNode.find('span.cursor').toggleClass('active');
+        }
+    };
+    setInterval(this.cursorBlink, 750);
+    this.createPrompt('');
 };
 var brosh = null;
 $(function() {
     brosh = new Shell('#shell');
-    brosh.createPrompt('');
-    var activeCursorClass = 'active';
-    setInterval(function() {
-        brosh.domNode.find('span.cursor').toggleClass(activeCursorClass);
-    }, 750);
-    $('body').keydown(ShellHandler);
-    $('#inputenter').bind('change', function() {
-        var value = $(this).attr('value');
-        console.info(value);
-        command = new Command(value);
-        brosh.setPrompt(command);
-    });
+    $('body').bind('keydown', ShellHandler);
 });
 var ShellHandler = function(event) {
-    console.dir(event);
     event.preventDefault();
     $('div#char').html(event.key + '<span class="small">' + event.keyCode + ' </span> ');
     if (event.keyCode === 13) {
@@ -168,14 +172,12 @@ var ShellHandler = function(event) {
             brosh.nextPrompt('');
         }
     } else if (event.keyCode >= 37 && event.keyCode <= 40) {
-        console.info(event.keyCode);
         // LEFT
         if (event.keyCode === 37) {
         }
         // UP
         if (event.keyCode === 38) {
             command = History.prev();
-            console.info(command);
             if (command !== false) {
                 brosh.setPrompt(command);
             }
@@ -186,7 +188,6 @@ var ShellHandler = function(event) {
         // DOWN
         if (event.keyCode === 40) {
             command = History.next();
-            console.info(command);
             if (command !== false) {
                 brosh.setPrompt(command);
             }

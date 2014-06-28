@@ -114,21 +114,14 @@ div#char span.small {
     font-size: 12px;
 }
 div#input {
+    padding: 4px 0;
     display: none;
     opacity: 0.5;
-    position: fixed;
-    font-size: 12px;
-    opacity: 0.5;
-    position: fixed;
-    left: 50%;
-    bottom: 80%;
-    margin: 0 0 -100px -15px;
-    width: 200px;
-    height: 30px;
-    z-index: 10;
-    font-size: 30px;
 }
 div#input input {
-    width: 200px;
-    height: 15px;
+    color: #333;
+    width: 384px;
+    height: 30px;
+    padding: 2px 7px;
+    display: block;
 }

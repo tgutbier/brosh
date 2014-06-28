@@ -4,7 +4,9 @@
     <title>Brosh</title>
     <meta charset="UTF-8" />
     <link href="style.css" type="text/css" rel="stylesheet" />
-    <script type="text/javascript" src="../jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>    
     <script type="text/javascript" src="lib.js"></script>
     <script type="text/javascript" src="app.js"></script>
     <script type="text/javascript" src="commands.js"></script>
@@ -14,7 +16,7 @@
 <div id="shell"></div>
 
 <div id="input">
-    <input id="inputenter" type="text">
+    <input id="inputenter" type="text" value="">
 </div>
 
 <div id="char"></div>

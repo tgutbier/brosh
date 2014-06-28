@@ -65,13 +65,27 @@ var commands = {
         brosh.outputLine('args[3]: ' + args[3]);
     },
     input: function(args) {
-        if (args[1] === 'on') {
-            $('#input').css('display', 'block');
-        } else if (args[1] === 'off') {
-            $('#input').css('display', 'none');
-        } else {
-            brosh.outputLine('usage: input on|off');
-        }
+        $('#input').css('display', 'block');
+        $('#input').dialog({
+            width: 400,
+            height: 100
+        });
+        $('#inputenter').focus();
+        brosh.suspend();
+        $('#inputenter').bind('keypress', function(event) {
+            if (event.which === 13) {
+                var value = $('#inputenter').val();
+                $('#inputenter').val('');
+                $('#inputenter').blur();
+                $('#input').css('display', 'none');
+                command = new Command(value);
+                brosh.setPrompt(command);
+                
+                $('#input').dialog('close');
+                $('#inputenter').unbind('keypress');
+                brosh.resume();
+            }
+        });
     },
     unvid: function(args) {
         $('#video').css('display', 'none');

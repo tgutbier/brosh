@@ -44,25 +44,36 @@ var commands = {
         }, 2000);
     },
     play: function(args) {
-        window.player.playVideo();
+        args.push('play');
+        this.vid(args);
     },
     stop: function(args) {
-        window.player.stopVideo();
+        args.push('stop');
+        this.vid(args);
     },
-    vidp: function(args) {
-        $('#video').toggleClass('trans');
+    unvid: function(args) {
+        args.push('off');
+        this.vid(args);
     },
     vid: function(args) {
-        $('#video').css('display', 'block');
-        window.player = new YT.Player('player', {
-            videoId: (typeof args[1] === 'undefined') ? '26mGJIXloCA' : args[1],
-            width:   (typeof args[2] === 'undefined') ? '640' : args[2],
-            height:  (typeof args[3] === 'undefined') ? '390' : args[3]
-        });
-        brosh.outputLine('args[0]: ' + args[0]);
-        brosh.outputLine('args[1]: ' + args[1]);
-        brosh.outputLine('args[2]: ' + args[2]);
-        brosh.outputLine('args[3]: ' + args[3]);
+        if (args[1] === 'on') {
+            $('#video').css('display', 'block');
+            window.player = new YT.Player('player', {
+                videoId: (typeof args[1] === 'undefined') ? '26mGJIXloCA' : args[1],
+                width:   (typeof args[2] === 'undefined') ? '640' : args[2],
+                height:  (typeof args[3] === 'undefined') ? '390' : args[3]
+            });
+        } else if (args[1] === 'off') {
+            $('#video').css('display', 'none');
+        } else if (args[1] === 'play') {
+            window.player.playVideo();
+        } else if (args[1] === 'stop') {
+            window.player.stopVideo();
+        } else if (args[1] === 'style') {
+            $('#video').toggleClass('trans');
+        } else {
+            brosh.outputLine('usage: video on|off|play|stop|style|height <height>|width <width>');
+        }
     },
     input: function(args) {
         $('#input').css('display', 'block');
@@ -87,9 +98,6 @@ var commands = {
             }
         });
     },
-    unvid: function(args) {
-        $('#video').css('display', 'none');
-    },
     svg: function(args) {
         $('#svg').css('display', 'block');
     },
@@ -105,27 +113,11 @@ var commands = {
     unless: function(args) {
         $('#image').css('display', 'none');
     },
-    repeat: function(args) {
-        if (isUndefined(args, [1, 2])) {
-            brosh.outputLine('usage: repeat number cmd arguments');
-            return;
-        }
-        var n = args[1];
-        var cmd = args[2];
-        var newArgs = [];
-        var i;
-        for (i = 2; i < args.length; i++) {
-            newArgs.push(args[i]);
-        }
-        for (i = 1; i <= n; i++) {
-            window.commands[cmd](newArgs);
-        }
-    },
     times: function(args) {
-        var text = args[2];
-        args[2] = 'echo';
-        args[3] = text;
-        this.repeat(args);
+        var i;
+        for(i = 1; i <= args[1]; i++) {
+            brosh.outputLine(args[2]);
+        }
     },
     rev: function(args) {
         if (typeof args[1] === 'undefined') {

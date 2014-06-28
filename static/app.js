@@ -59,6 +59,7 @@ var Shell = function (selector) {
     this.promptDomNode = null;
     this.outputDomNode = null;
     this.suspendState = false;
+    this.showInputActive = true;
     this.addChar = function(keyValue) {
         this.promptDomNode.find('span.text').append(keyValue);
         var rawCommand = this.promptDomNode.find('span.text').html();
@@ -135,6 +136,15 @@ var Shell = function (selector) {
             brosh.domNode.find('span.cursor').toggleClass('active');
         }
     };
+    this.showInput = function(event) {
+        if (this.showInputActive) {
+            $('div#char').html(event.key + '<span class="small">' + event.keyCode + ' </span> ');
+        }
+    };
+    this.toggleShowInput = function() {
+        this.showInputActive = !this.showInputActive;
+        $('div#char').toggle(this.showInputActive);
+    };
     setInterval(this.cursorBlink, 750);
     this.createPrompt('');
 };
@@ -145,7 +155,7 @@ $(function() {
 });
 var ShellHandler = function(event) {
     event.preventDefault();
-    $('div#char').html(event.key + '<span class="small">' + event.keyCode + ' </span> ');
+    brosh.showInput(event);
     if (event.keyCode === 13) {
         var command = brosh.getCommand();
         var name = command.name;

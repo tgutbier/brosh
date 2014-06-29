@@ -81,6 +81,9 @@ body#brosh div#video {
     transition: transform 2s, box-shadow 2s;
     overflow: hidden;
 }
+body#brosh div#video.strong {
+    opacity: 1;
+}
 body#brosh div#video.trans {
     transform: rotate(30deg);
     box-shadow: 0 0 20px 20px #eee;

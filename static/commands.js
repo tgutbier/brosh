@@ -14,7 +14,7 @@ var commands = {
             });
             return;
         }
-        brosh.outputLine(args.join(' '));
+        brosh.outputLine(args.slice(1).join(' '));
     },
     ls: function(args) {
         for (var key in this) {
@@ -53,13 +53,22 @@ var commands = {
     vid: function(args) {
         if (args[1] === 'on') {
             $('#video').css('display', 'block');
+            var videoId = (typeof args[2] === 'undefined') ? '26mGJIXloCA' : args[2];
+            console.log(videoId);
             window.player = new YT.Player('player', {
-                videoId: (typeof args[1] === 'undefined') ? '26mGJIXloCA' : args[1],
-                width:   (typeof args[2] === 'undefined') ? '640' : args[2],
-                height:  (typeof args[3] === 'undefined') ? '390' : args[3]
+                videoId: videoId,
+                width:   '640',
+                height:  '390'
             });
+        } else if (args[1] === 'hide') {
+            $('#video').css('opacity', '0');
+        } else if (args[1] === 'show') {
+            $('#video').css('opacity', '1');
         } else if (args[1] === 'off') {
+            window.player = null;
             $('#video').css('display', 'none');
+        } else if (args[1] === 'strong') {
+            $('#video').toggleClass('strong');
         } else if (args[1] === 'play') {
             window.player.playVideo();
         } else if (args[1] === 'stop') {
@@ -67,7 +76,7 @@ var commands = {
         } else if (args[1] === 'style') {
             $('#video').toggleClass('trans');
         } else {
-            brosh.outputLine('usage: video on|off|play|stop|style|height <height>|width <width>');
+            brosh.outputLine('usage: video on [video-id]|off|hide|show|play|stop|style');
         }
     },
     range: function(args) {

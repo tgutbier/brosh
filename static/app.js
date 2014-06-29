@@ -8,7 +8,7 @@ InputLine.prototype.getName = function() {
     return this.getArgs()[0];
 };
 InputLine.prototype.getArgs = function() {
-    return this.getRaw().trim().split(" ");
+    return this.getRaw().replace(/^\s+|\s+$|\s+(?=\s)/g, "").split(" ");
 };
 InputLine.prototype.update = function(rawCommand) {
     this.raw = rawCommand;
@@ -67,6 +67,7 @@ var Shell = function (selector) {
     this.setPrompt = function(inputLine) {
         this.promptDomNode.find('span.text').html(inputLine.getRaw());
         this.inputLine = inputLine;
+        History.add(this.inputLine);
     };
     this.getInputLine = function() {
         return this.inputLine;
@@ -139,6 +140,33 @@ var Shell = function (selector) {
     this.toggleShowInput = function() {
         this.showInputActive = !this.showInputActive;
         $('div#char').toggle(this.showInputActive);
+    };
+    this.closeShellWindow = function() {
+        var shellWindow = $('#input');
+        shellWindow.dialog('close');
+        shellWindow.dialog('destroy');
+        shellWindow.css('display', 'none');
+    };
+    this.createShellWindow = function(props) {
+        var shellWindow = $('#input');
+        shellWindow.css('display', 'block');
+        var dialogSettings = {
+            width: 400,
+            height: 100,
+            create: function(event, ui) {
+                console.info('creating dialog');
+                brosh.suspend();
+            },
+            close: function(event, ui) {
+                console.info('closing dialog');
+                brosh.resume();
+            }
+        };
+        for (var key in props) {
+            dialogSettings[key] = props[key];
+        }
+        shellWindow.dialog(dialogSettings);
+        return shellWindow;
     };
     setInterval(this.cursorBlink, 750);
     this.createPrompt('');

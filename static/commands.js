@@ -8,11 +8,13 @@ var commands = {
         brosh.outputLine('BroSh: Error in command!> &laquo;<span class="error">' + name + '</span>&raquo;');
     },
     echo: function(args) {
-        $.each(args, function(index, value) {
-            if (index !== 0) {
+        if (args[1] === '-nl') {
+            $.each(args.slice(2), function(index, value) {
                 brosh.outputLine(value);
-            }
-        });
+            });
+            return;
+        }
+        brosh.outputLine(args.join(' '));
     },
     ls: function(args) {
         for (var key in this) {
@@ -82,25 +84,23 @@ var commands = {
         }
     },
     input: function(args) {
-        $('#input').css('display', 'block');
-        $('#input').dialog({
-            width: 400,
-            height: 100
-        });
-        $('#inputenter').focus();
-        brosh.suspend();
-        $('#inputenter').bind('keypress', function(event) {
+        var shellWindow = brosh.createShellWindow();
+        shellWindow.html('<input id="inputline" type="text" value="">');
+        var inputLine = $('#inputline');
+        if (typeof args[1] !== 'undefined') {
+            inputLine.val(args.slice(1).join(' '));
+        }
+        var strLength = inputLine.val().length;
+        inputLine.focus();
+        inputLine[0].setSelectionRange(strLength, strLength);
+        inputLine.bind('keypress', function(event) {
             if (event.which === 13) {
-                var value = $('#inputenter').val();
-                $('#inputenter').val('');
-                $('#inputenter').blur();
-                $('#input').css('display', 'none');
-                command = new Command(value);
-                brosh.setPrompt(command);
-                
-                $('#input').dialog('close');
-                $('#inputenter').unbind('keypress');
-                brosh.resume();
+                var value = inputLine.val();
+                inputLine.val('');
+                inputLine.blur();
+                inputLine.unbind('keypress');
+                brosh.setPrompt(new InputLine(value));
+                brosh.closeShellWindow();
             }
         });
     },

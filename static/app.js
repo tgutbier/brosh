@@ -67,7 +67,6 @@ var Shell = function (selector) {
     this.setPrompt = function(inputLine) {
         this.promptDomNode.find('span.text').html(inputLine.getRaw());
         this.inputLine = inputLine;
-        History.add(this.inputLine);
     };
     this.getInputLine = function() {
         return this.inputLine;
@@ -79,9 +78,12 @@ var Shell = function (selector) {
         $('.cursor').removeClass('cursor');
         $('.text').removeClass('smog');
         this.promptDomNode = $('<p><span class="location">brosh:></span><span><span class="text smog">' + str + '</span></span><span class="cursor"> </span></p>');
-        if (this.inputLine === null || this.inputLine.getName().length > 0) {
+        if (this.inputLine === null) {
             this.inputLine = new InputLine('');
+        }
+        if (this.inputLine.getName().length > 0) {
             History.add(this.inputLine);
+            this.inputLine = new InputLine('');
         }
         this.domNode.append(this.promptDomNode);
         this.scroll();

@@ -54,12 +54,14 @@ var commands = {
         if (args[1] === 'on') {
             $('#video').css('display', 'block');
             var videoId = (typeof args[2] === 'undefined') ? '26mGJIXloCA' : args[2];
-            console.log(videoId);
             window.player = new YT.Player('player', {
                 videoId: videoId,
                 width:   '640',
                 height:  '390'
             });
+        } else if (args[1] === 'set' && (typeof args[2] !== 'undefined')) {
+            var videoId =  args[2];
+            window.player.loadVideoById(videoId);
         } else if (args[1] === 'hide') {
             $('#video').css('opacity', '0');
         } else if (args[1] === 'show') {
@@ -76,7 +78,7 @@ var commands = {
         } else if (args[1] === 'style') {
             $('#video').toggleClass('trans');
         } else {
-            brosh.outputLine('usage: video on [video-id]|off|hide|show|play|stop|style');
+            brosh.outputLine('usage: vid on [video-id]|set [video-id]|off|play|stop|hide|show|style');
         }
     },
     range: function(args) {

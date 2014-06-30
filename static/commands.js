@@ -3,6 +3,11 @@ var commands = {
         var name = args[0];
         brosh.outputLine('BroSh: Command not found!> &laquo;<span class="error">' + name + '</span>&raquo;');
     },
+    exit: function(args) {
+        $('body').html('<div id="restart">The brosh has been Stopped!<br>Press F5 to Restart.<div>');
+        $('body').css('opacity', '0.4');
+        brosh.suspend();
+    },
     commandError: function(args) {
         var name = args[0];
         brosh.outputLine('BroSh: Error in command!> &laquo;<span class="error">' + name + '</span>&raquo;');

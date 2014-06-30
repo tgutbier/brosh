@@ -127,3 +127,18 @@ div#input input {
     padding: 2px 7px;
     display: block;
 }
+div#restart {
+    position: absolute;
+    box-sizing: border-box;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -100px;
+    width: 400px;
+    text-align: center;
+    background-color: #888;
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    color: #eee;
+    padding: 30px;
+}
